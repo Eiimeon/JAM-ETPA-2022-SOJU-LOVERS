@@ -24,6 +24,7 @@ class StartScreen extends Phaser.Scene {
 
         this.load.image('miko','assets/images/miko0.png');
         this.load.image('denial','assets/images/denialProto.png');
+        this.load.image('transparent','assets/images/transparent.png');
 
         this.load.image('tileset', 'assets/images/map/tilesetProto.png')
         this.load.tilemapTiledJSON('gym', 'assets/images/map/gym.json');

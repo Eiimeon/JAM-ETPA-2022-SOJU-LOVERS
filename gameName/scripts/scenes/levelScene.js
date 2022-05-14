@@ -2,16 +2,21 @@ class levelScene extends Phaser.Scene {
 
     constructor(config) {
         super(config);
+
+        this.safe1 = new Array(2).fill(new Array);
+        this.safe2 = new Array(2).fill(new Array);
+        this.safe1Overlap = new Array(2).fill(new Array);
+        this.safe2Overlap = new Array(2).fill(new Array);
+
+
     }
 
 
-    buildBetterHitBox(layer, hitboxVar, beatmap) {
+    buildBetterHitBox(layer, hitboxVar) {
         for (let i = 0; i < layer.height; i++) {
             for (let j = 0; j < layer.width; j++) {
                 if (layer.data[i][j].index >= 0) {
-                    hitboxVar.push(new RythmPlat(this, j * 64, i * 64, 'transparent', beatmap).setOrigin(0, 0));
-                    if (layer.name = '4beats/deathbox41') {
-                    }
+                    hitboxVar.push(new SafeZoneBlock(this, j * 64, i * 64, hitboxVar).setOrigin(0, 0));
                 }
             }
         }
@@ -21,7 +26,18 @@ class levelScene extends Phaser.Scene {
         this.obstacles = map.createLayer('ligne blanche', tileset);
         this.obstacles.setCollisionByExclusion(-1, true);
 
-
+        map.layers.forEach((layer) => {
+            switch (layer.name[0]) {
+                case 's':
+                    console.log(layer.name[9])
+                    map.createLayer(layer.name, tileset);
+                    this.buildBetterHitBox(layer, this.safe1[layer.name[9]]);
+                    this.buildBetterHitBox(layer, this.safe2[layer.name[9]]);
+                    this.buildBetterHitBox(layer, this.safe1Overlap[layer.name[9]]);
+                    this.buildBetterHitBox(layer, this.safe2Overlap[layer.name[9]]);
+                    break;
+            }
+        })
     }
 
     buildCollisions() {
@@ -30,17 +46,39 @@ class levelScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player1, this.obstacles);
         this.physics.add.collider(this.player2, this.obstacles);
-        this.physics.add.overlap(this.player1, this.player2, function(p1, p2){
 
-            if(p1.hasChoco){
-                p2.tryTag(p1);
-            }else{
-                p1.tryTag(p2);
-            }
-            
-            
-            
-        });
+        for (let i = 0; i < 2; i++) {
+            this.physics.add.collider(this.player1, this.safe1[i]);
+            this.physics.add.collider(this.player2, this.safe2[i]);
+            console.log(this.safe1Overlap[i])
+            this.physics.add.overlap(this.player1, this.safe1Overlap[i], (currPlayer, currSafeBox) => {
+                console.log('safe1');
+            })
+            this.physics.add.overlap(this.player2, this.safe2Overlap[i], (currPlayer, currSafeBox) => {
+                console.log('safe2');
+            })
+        }
+
+        // if (this.player1.hasChoco) {
+        //     for (let i = 0; i < this.safe1.length; i++) {
+        //         this.safe1[i].forEach((safeBox) => {
+        //             safeBox.swap();
+        //         })
+        //         this.safe2Overlap[i].forEach((safeBox) => {
+        //             safeBox.swap();
+        //         })
+        //     }
+        // }
+        // if (this.player2.hasChoco) {
+        //     for (let i = 0; i < this.safe1.length; i++) {
+        //         this.safe2[i].forEach((safeBox) => {
+        //             safeBox.swap();
+        //         })
+        //         this.safe1Overlap[i].forEach((safeBox) => {
+        //             safeBox.swap();
+        //         })
+        //     }
+        // }
     }
 
     buildLevel(map, tileset) {
@@ -115,6 +153,37 @@ class levelScene extends Phaser.Scene {
 
         this.player1.depthUpdate();
         this.player2.depthUpdate();
+
+        // Update les safes à chaque frame
+
+        for (let i = 0; i<2 ; i++) {
+            // console.log('swap');
+            this.safe1[i].forEach((safeBox) => {
+                safeBox.swap2(1);
+            })
+            // this.safe1Overlap[i].forEach((safeBox) => {
+            //     safeBox.swap2(1);
+            // })
+            this.safe2[i].forEach((safeBox) => {
+                safeBox.swap2(2);
+            })
+            // this.safe2Overlap[i].forEach((safeBox) => {
+            //     safeBox.swap2(2);
+            // })
+        }
+
+        if((this.player1.x - this.player2.x)**2+(this.player1.y - this.player2.y)**2 < (64*1.2)**2){
+
+            if(true){
+                if(this.player1.hasChoco){
+                    console.log('p1 tag')
+                    this.player2.tryTag(this.player1);
+                }else{
+                    console.log('p1 tag')
+                    this.player1.tryTag(this.player2);
+                }
+            }
+        }
     }
 
     init(_musicScene) {
@@ -124,4 +193,5 @@ class levelScene extends Phaser.Scene {
     }
 
     update(time, delta) { }
+
 }

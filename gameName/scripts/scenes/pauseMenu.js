@@ -3,19 +3,18 @@ class PauseMenu extends Phaser.Scene {
         super({
             key: 'PauseMenu',
         })
+        this.canPressP = false;
     }
 
     resumeGame() {
-        let musicScene = this.scene.get('MusicAndData');
-        musicScene.scene.resume();
-        musicScene.levelScene.scene.resume();
+        this.musicScene.scene.resume();
+        this.musicScene.levelScene.scene.resume();
         this.scene.sleep();
     }
 
     endGame() {
-        let musicScene = this.scene.get('MusicAndData');
-        musicScene.scene.stop();
-        musicScene.levelScene.scene.stop();
+        this.musicScene.scene.stop();
+        this.musicScene.levelScene.scene.stop();
         this.scene.run('StartScreen');
         this.scene.sleep();
     }
@@ -28,6 +27,10 @@ class PauseMenu extends Phaser.Scene {
     preload() { }
 
     create() {
+        this.musicScene = this.scene.get('MusicAndData');
+        this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        this.time.addEvent({delay : 500, callback : () => {this.canPressP = true}});
+
         this.add.image(1920 / 2, 1080 / 2, 'pause');
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
@@ -45,5 +48,9 @@ class PauseMenu extends Phaser.Scene {
         this.mainMenu.on('pointerdown', () => this.endGame());
     }
 
-    update() { }
+    update() {
+        if (this.keyP.isDown && this.canPressP) {
+            this.resumeGame();
+        }
+    }
 }   

@@ -26,11 +26,11 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
         this.speed = 500;
         this.accelerationFactor = 2;
         this.decelerationFactor = 3;
-        this.turnDecelerationFactor = 4;
+        this.turnDecelerationFactor = 6;
 
         this.hasChoco = false;
         this.stunTimer = -1;
-
+        this.dead = false;
 
         console.log(this.controlsType)
         if(this.controlsType){
@@ -57,7 +57,9 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
 
     move(delta) {
 
+        if(this.stunTimer < 0 || this.dead){
 
+        
             if(this.controlsType)
             {
                 if(this.scene.cursors.left.isDown){
@@ -230,13 +232,16 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
                 
             
             }
-
+        }
         this.setVelocityX(this.accelerationX * this.speed);
         this.setVelocityY(this.accelerationY * this.speed);
         if(this.stunTimer >= 0){
             //do stun stuff
             this.stunTimer -= delta;
+
             this.setTint(0xff0000);
+            this.accelerationX = this.lerp(this.accelerationX,0,delta * 0.001 * this.decelerationFactor);
+            this.accelerationY = this.lerp(this.accelerationY,0,delta * 0.001 * this.decelerationFactor);
         }else{
             this.setTint(0xffffff);
         }
@@ -251,28 +256,76 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
     }
 
 
-    tryTag(tagged){
-
+    endGame(tagged){
         if(this.stunTimer <0 && tagged.stunTimer <0){
             this.hasChoco = true;
             tagged.hasChoco = false;
-            tagged.stunTimer = 2000;
+            tagged.stunTimer = 5000;
+            this.dead = true;
 
             if(tagged.x - this.x < 0 ){
-                    tagged.accelerationX = -1 * randomfloat(0.9,1.2);
+                    tagged.accelerationX = -1 * randomfloat(0.5,0.9);
 
             }
             else{
-                tagged.accelerationX = 1 * randomfloat(0.9,1.2);
+                tagged.accelerationX = 1 * randomfloat(0.5,0.9);
 
             }
             if(tagged.y - this.y < 0 ){
 
-                tagged.accelerationY = -1 * randomfloat(0.9,1.2);
+                tagged.accelerationY = -1 * randomfloat(0.5,0.9);
             }
             else{
-                tagged.accelerationY = 1 * randomfloat(0.9,1.2);
+                tagged.accelerationY = 1 * randomfloat(0.5,0.9);
             }
+            
+        }
+    }
+
+
+    tryTag(tagged){
+
+        if(this.stunTimer <0 && tagged.stunTimer <0){
+
+            for (let i = 0; i<2 ; i++) {
+                console.log('swap');
+                this.scene.safe1[i].forEach((safeBox) => {
+                    safeBox.swap2(1);
+                })
+                // this.scene.safe1Overlap[i].forEach((safeBox) => {
+                //     safeBox.swap();
+                // })
+                this.scene.safe2[i].forEach((safeBox) => {
+                    safeBox.swap2(2);
+                })
+                // this.scene.safe2Overlap[i].forEach((safeBox) => {
+                //     safeBox.swap();
+                // })
+            }
+
+
+
+
+            this.hasChoco = true;
+            tagged.hasChoco = false;
+            tagged.stunTimer = 1500;
+
+            if(tagged.x - this.x < 0 ){
+                    tagged.accelerationX = -1 * randomfloat(0.5,0.9);
+
+            }
+            else{
+                tagged.accelerationX = 1 * randomfloat(0.5,0.9);
+
+            }
+            if(tagged.y - this.y < 0 ){
+
+                tagged.accelerationY = -1 * randomfloat(0.5,0.9);
+            }
+            else{
+                tagged.accelerationY = 1 * randomfloat(0.5,0.9);
+            }
+            
         }
     }
 
@@ -292,5 +345,9 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
         else {
             this.anims.play('idle');
         }
+    }
+
+    lerp (start, end, amt){//fonction qui fait transition entre deux valeur selon un facteur atm
+        return (1-amt)*start+amt*end;
     }
 }
