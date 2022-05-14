@@ -23,6 +23,7 @@ var config = {
         PauseMenu,
         Controls,
         MusicAndData,
+        Credits,
         L1_0,
         L1_1,
         L1_2,

@@ -35,7 +35,7 @@ class StartScreen extends Phaser.Scene {
 
         this.start = this.add.image(500,500, 'start') ;
         this.start.setInteractive();
-        this.start.on('pointerdown', () => {this.scene.start('MusicAndData')});
+        this.start.on('pointerdown', () => {this.scene.start('Credits')});
 
         this.controls = this.add.image(500,800, 'controls') ;
         this.controls.setInteractive();
