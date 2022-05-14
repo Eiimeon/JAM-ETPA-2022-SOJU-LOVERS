@@ -31,7 +31,7 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
         this.hasChoco = false;
         this.stunTimer = -1;
         this.dead = false;
-
+        this.safeTimer = 0;
         console.log(this.controlsType)
         if(this.controlsType){
             this.hasChoco = true;
@@ -57,7 +57,7 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
 
     move(delta) {
 
-        if(this.stunTimer < 0 || this.dead){
+        if(this.stunTimer < 0 && !this.dead){
 
         
             if(this.controlsType)
@@ -233,6 +233,7 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
             
             }
         }
+        
         this.setVelocityX(this.accelerationX * this.speed);
         this.setVelocityY(this.accelerationY * this.speed);
         if(this.stunTimer >= 0){
@@ -246,8 +247,15 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
             this.setTint(0xffffff);
         }
         if(this.hasChoco){
-
+            this.setVelocityX(this.accelerationX * this.speed);
+            this.setVelocityY(this.accelerationY * this.speed);
             this.setTint(0xffff00);
+        }else{
+            this.setVelocityX(this.accelerationX * this.speed * 1.1);
+            this.setVelocityY(this.accelerationY * this.speed * 1.1);
+        }
+        if(this.safeTimer >= 0){
+            this.safeTimer -=1;
         }
     } 
 
@@ -257,11 +265,11 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
 
 
     endGame(tagged){
-        if(this.stunTimer <0 && tagged.stunTimer <0){
+        if(this.stunTimer <0 && tagged.stunTimer <0 && tagged.safeTimer <0){
             this.hasChoco = true;
             tagged.hasChoco = false;
             tagged.stunTimer = 5000;
-            this.dead = true;
+            tagged.dead = true;
 
             if(tagged.x - this.x < 0 ){
                     tagged.accelerationX = -1 * randomfloat(0.5,0.9);
@@ -285,7 +293,7 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
 
     tryTag(tagged){
 
-        if(this.stunTimer <0 && tagged.stunTimer <0){
+        if(this.stunTimer <0 && tagged.stunTimer <0 && tagged.safeTimer <0){
 
             for (let i = 0; i<2 ; i++) {
                 console.log('swap');

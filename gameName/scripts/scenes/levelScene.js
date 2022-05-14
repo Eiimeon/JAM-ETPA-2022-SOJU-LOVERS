@@ -47,15 +47,18 @@ class levelScene extends Phaser.Scene {
         this.physics.add.collider(this.player1, this.obstacles);
         this.physics.add.collider(this.player2, this.obstacles);
 
+        this.player1.isSafe = false;
+        this.player2.isSafe = false;
         for (let i = 0; i < 2; i++) {
             this.physics.add.collider(this.player1, this.safe1[i]);
             this.physics.add.collider(this.player2, this.safe2[i]);
             console.log(this.safe1Overlap[i])
             this.physics.add.overlap(this.player1, this.safe1Overlap[i], (currPlayer, currSafeBox) => {
-                console.log('safe1');
+                this.player1.safeTimer = 3;
+
             })
             this.physics.add.overlap(this.player2, this.safe2Overlap[i], (currPlayer, currSafeBox) => {
-                console.log('safe2');
+                this.player2.safeTimer = 3;
             })
         }
 
@@ -134,9 +137,20 @@ class levelScene extends Phaser.Scene {
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
         //this.time.addEvent({ delay: 300, callbackScope: this, callback: function () { this.juke.start(this.keyA); } });
+        this.gameTimer = 60;
+        this.nextTagEnd = false;
+        //this.time.addEvent({ delay: 300, callbackScope: this, callback: function () { this.juke.start(this.keyA); } });
     }
 
     standardUpdate(time, delta) {
+
+        // console.log(this.player1.safeTimer,this.player2.safeTimer);
+        if(this.gameTimer >= 0){
+            this.gameTimer -= delta * 0.001;
+            // console.log(this.gameTimer);
+        }else{
+            this.nextTagEnd = true;
+        }
         if (this.keyP.isDown) {
             console.log('pause');
             this.scene.run('PauseMenu');
@@ -174,14 +188,30 @@ class levelScene extends Phaser.Scene {
 
         if((this.player1.x - this.player2.x)**2+(this.player1.y - this.player2.y)**2 < (64*1.2)**2){
 
-            if(true){
-                if(this.player1.hasChoco){
-                    console.log('p1 tag')
-                    this.player2.tryTag(this.player1);
+            if(!this.player1.dead && !this.player2.dead){
+                if(this.nextTagEnd){
+                    if(this.player1.hasChoco){
+                        this.player2.endGame(this.player1); 
+                    }else{
+                        this.player1.endGame(this.player2);
+                    }
                 }else{
-                    console.log('p1 tag')
-                    this.player1.tryTag(this.player2);
+                    if(this.player1.hasChoco){
+                        this.player2.tryTag(this.player1);
+                    }else{
+                        this.player1.tryTag(this.player2);
+                    }
                 }
+            }else{
+                if(this.player1.stunTimer <0 && this.player2.stunTimer <0){
+                    this.player1.dead = false;
+                    this.player2.dead = false;
+                    console.log("DEADDEADDEAD")
+                    this.scene.start('StartScreen');
+
+                }
+
+                
             }
         }
     }
