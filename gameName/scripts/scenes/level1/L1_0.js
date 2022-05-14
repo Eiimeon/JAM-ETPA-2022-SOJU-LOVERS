@@ -6,8 +6,8 @@ class L1_0 extends levelScene {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { y: g },
-                    //debug: true
+                    gravity: { y: 0 },
+                    // debug: true
                 }
             }
         })
@@ -16,12 +16,14 @@ class L1_0 extends levelScene {
     preload() { }
 
     create() {
-        this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-        this.add.image(0,0,'placeholderLvl1').setOrigin(0);
+        const MAP = this.make.tilemap({ key: 'gym' });
+        const TILESET = MAP.addTilesetImage('proto', 'tileset');
+
+        this.buildLevel(MAP, TILESET);
     }
 
-    update(time,delta) {
-        this.standardUpdate(time,delta);
+    update(time, delta) {
+        this.standardUpdate(time, delta);
     }
 
 }

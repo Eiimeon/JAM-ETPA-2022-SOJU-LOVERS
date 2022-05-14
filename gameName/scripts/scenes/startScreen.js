@@ -10,6 +10,13 @@ class StartScreen extends Phaser.Scene {
         this.load.image('titleScreen', 'assets/images/titleScreen.png');
         this.load.image('placeholderLvl1', 'assets/images/placeholderLvl1.png');
         this.load.image('pause','assets/images/pause.png');
+
+        this.load.spritesheet('runSheet', 'assets/images/runAnimTestSheet.png', { frameWidth: 1000, frameHeight: 1270 });
+
+        this.load.image('miko','assets/images/miko0.png');
+
+        this.load.image('tileset', 'assets/images/map/tilesetProto.png')
+        this.load.tilemapTiledJSON('gym', 'assets/images/map/gym.json');
     }
 
     create() {

@@ -18,7 +18,7 @@ var config = {
         mode : Phaser.Scale.FIT
     },
     scene: [
-        IntroLogos,
+        // IntroLogos,
         StartScreen,
         PauseMenu,
         MusicAndData,

@@ -18,158 +18,26 @@ class levelScene extends Phaser.Scene {
     }
 
     buildGamePlaformsFromMap(map, tileset) {
-        this.platforms = map.createLayer('platforms', tileset);
-        this.platforms.setCollisionByExclusion(-1, true);
+        this.obstacles = map.createLayer('ligne blanche', tileset);
+        this.obstacles.setCollisionByExclusion(-1, true);
 
-        this.deathBoxes = map.createLayer('deathBoxes', tileset);
-        this.deathBoxes.setCollisionByExclusion(-1, true);
 
-        for (let i = 0; i < 4; i++) {
-            this.p4[i] = map.createLayer('4beats/plat4' + (i + 1), tileset);
-            var beatmap = new Array(4).fill(0);
-            beatmap[i] = 1;
-            this.p4[i] = new RythmMover(this.p4[i], beatmap);
-            //console.log(this.p4[i]);
-        }
-
-        for (let i = 0; i < 4; i++) {
-            this.db4[i] = map.createLayer('4beats/deathbox4' + (i + 1), tileset);
-            var beatmap = new Array(4).fill(0);
-            beatmap[i] = 1;
-            this.db4[i] = new RythmMover(this.db4[i], beatmap);
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.p8[i] = map.createLayer('8beats/plat8' + (i + 1), tileset);
-            var beatmap = new Array(8).fill(0);
-            beatmap[i] = 1;
-            this.p8[i] = new RythmMover(this.p8[i], beatmap);
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.db8[i] = map.createLayer('8beats/deathbox8' + (i + 1), tileset);
-            var beatmap = new Array(8).fill(0);
-            beatmap[i] = 1;
-            this.db8[i] = new RythmMover(this.db8[i], beatmap);
-        }
-
-        // Mise en place des better bodies
-
-        map.layers.forEach(layer => {
-            switch (layer.name[0] + '-' + layer.name.length) {
-
-                // Patterns sur 4 temps
-
-                case '4-13': // 4beats/plat4X
-
-                    var beatmap = new Array(parseInt(layer.name[0])).fill(0);
-                    var index = parseInt(layer.name[layer.name.length - 1]) - 1;
-                    beatmap[index] = 1;
-                    this.buildBetterHitBox(layer, this.p4overlap[index], beatmap);
-                    break;
-
-                case '4-17': // 4beats/deathbox4X
-                    var beatmap = new Array(parseInt(layer.name[0])).fill(0);
-                    var index = parseInt(layer.name[layer.name.length - 1]) - 1;
-                    beatmap[index] = 1;
-                    this.buildBetterHitBox(layer, this.db4overlap[index], beatmap);
-                    break;
-
-                // Patterns sur 8 temps 
-
-                case '8-13': // 8beats/plat8X
-
-                    var beatmap = new Array(parseInt(layer.name[0])).fill(0);
-                    var index = parseInt(layer.name[layer.name.length - 1]) - 1;
-                    beatmap[index] = 1;
-                    this.buildBetterHitBox(layer, this.p8overlap[index], beatmap);
-                    break;
-
-                case '8-17': // 8beats/deathbox8X
-
-                    var beatmap = new Array(parseInt(layer.name[0])).fill(0);
-                    var index = parseInt(layer.name[layer.name.length - 1]) - 1;
-                    beatmap[index] = 1;
-                    this.buildBetterHitBox(layer, this.db8overlap[index], beatmap);
-                    break;
-            }
-        })
     }
 
     buildCollisions() {
 
         // Colliders avec les layers
 
-        this.physics.add.collider(this.player, this.platforms);
-
-        this.physics.add.collider(this.player, this.deathBoxes, function (currPlayer) {
-            currPlayer.die();
-        }, null, this);
-
-        for (let i = 0; i < 4; i++) {
-            this.p4[i].plat.setCollisionByExclusion(-1, true);
-            this.physics.add.collider(this.player, this.p4[i].plat);
-        }
-
-        for (let i = 0; i < 4; i++) {
-            this.db4[i].plat.setCollisionByExclusion(-1, true);
-            this.physics.add.collider(this.player, this.db4[i].plat, function (currPlayer) {
-                currPlayer.die();
-            });
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.p8[i].plat.setCollisionByExclusion(-1, true);
-            this.physics.add.collider(this.player, this.p8[i].plat);
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.db8[i].plat.setCollisionByExclusion(-1, true);
-            this.physics.add.collider(this.player, this.db8[i].plat, function (currPlayer) {
-                currPlayer.die();
-            });
-        }
-
-        // Overlaps avec les better bodies
-
-        for (let i = 0; i < 4; i++) {
-            this.physics.add.overlap(this.player, this.p4overlap[i]);
-        }
-
-        for (let i = 0; i < 4; i++) {
-            this.physics.add.overlap(this.player, this.db4overlap[i], function (currPlayer) {
-                currPlayer.die();
-            });
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.physics.add.overlap(this.player, this.p8overlap[i]);
-        }
-
-        for (let i = 0; i < 8; i++) {
-            this.physics.add.overlap(this.player, this.db8overlap[i], function (currPlayer) {
-                currPlayer.die();
-            });
-        }
-
-        // Autres
-
-        this.physics.add.overlap(this.player, this.checkpoints, (currPlayer) => {
-            //currPlayer.spawnIndex += 1;
-            //currPlayer.die();
-            if (true) {
-                console.log(((parseInt(this.scene.key[3])+1)%5));
-                this.scene.start('L1_' + ((parseInt(this.scene.key[3])+1)%5), this.musicScene);
-            }
-        });
+        this.physics.add.collider(this.player1, this.obstacles);
+        this.physics.add.collider(this.player2, this.obstacles);
+        this.physics.add.collider(this.player1, this.player2);
     }
 
     buildLevel(map, tileset) {
 
         // Décor
 
-        this.add.image(0, 0, 'fond').setOrigin(0, 0).setScrollFactor(0);
-        map.createLayer('pointilles', tileset);
+        map.createLayer('fond', tileset);
 
         // Plateformes
 
@@ -177,33 +45,42 @@ class levelScene extends Phaser.Scene {
 
         // Player & Object layers
 
-        var _checkpoints = this.physics.add.group({ allowGravity: false, immovable: true });
-
-        map.getObjectLayer('portals').objects.forEach(function (currCheck) { _checkpoints.create(currCheck.x, currCheck.y - 64, 'greenBlock').setOrigin(0); });
-
-        this.checkpoints = _checkpoints;
-
         this.spawns = map.getObjectLayer('spawns').objects;
 
-        this.player = new Chara(this, 0, 0, 'miko').setOrigin(0, 0);
-        this.player.setSize(350, 896);
-        this.player.setScale(1 / 7);
-        this.player.die();
+
+        this.player1 = new Chara(this, this.spawns[0].x, this.spawns[0].y, 'miko', 'cursors').setOrigin(0, 0);
+        this.player1.setSize(350, 200);
+        this.player1.body.setOffset(4 * 64 + 32, 900);
+        this.player1.setScale(1 / 7);
+
+        this.player2 = new Chara(this, this.spawns[1].x, this.spawns[1].y, 'denialProto', 'zqsd').setOrigin(0, 0);
+        this.player2.setSize(350, 200);
+        this.player2.body.setOffset(4 * 64 + 32, 900);
+        this.player2.setScale(1 / 7);
+
+        // Collisions
 
         this.buildCollisions();
 
+        //this.buildCollisions();
+
         // Camera
         var cam = this.cameras.main;
-        cam.startFollow(this.player);
-        cam.setFollowOffset(0, 0);
-        cam.setBounds(64, 64, map.width * 64 - 128, map.height * 64 - 3 * 64 - 5, true, true, true); // Empêche de voir sous le sol notamment
-        cam.setZoom(1.2);
+        //cam.startFollow(this.player);
+        cam.setBounds(0, 0, map.width, map.height, true, true, true); // Empêche de voir sous le sol notamment
+        cam.setZoom(0.7);
 
         this.cameras.main.fadeIn(1000);
 
 
         // Touches utilisées
         this.cursors = this.input.keyboard.createCursorKeys(); // Flèches directionnelles 
+
+        this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        this.keyQ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE); // Touche espace 
         this.keyE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
@@ -211,8 +88,7 @@ class levelScene extends Phaser.Scene {
         //this.time.addEvent({ delay: 300, callbackScope: this, callback: function () { this.juke.start(this.keyA); } });
     }
 
-    standardUpdate(time,delta) {
-
+    standardUpdate(time, delta) {
         if (this.keyP.isDown) {
             console.log('pause');
             this.scene.run('PauseMenu');
@@ -221,16 +97,14 @@ class levelScene extends Phaser.Scene {
             this.musicScene.scene.pause();
         }
 
-        /*
-        //console.log(timer.getElapsed()) ;
-        //console.log(time) ;
-        console.log(player.x)
-        if (juke.on && (player.y > 5*64 || player.x < 4*640-64)) {
-            if ( Math.floor(juke.oneSec.getElapsed()) != 1000 ) {
-                console.log(juke.globalTime+ '.' + Math.floor(juke.oneSec.getElapsed())) ;
-            }
-        }
-        */
+        this.player1.move(delta);
+        this.player1.animate();
+
+        this.player2.move(delta);
+        this.player2.animate();
+
+        this.player1.depthUpdate();
+        this.player2.depthUpdate();
     }
 
     init(_musicScene) {
@@ -239,5 +113,5 @@ class levelScene extends Phaser.Scene {
         console.log('Nouvelle scene : ' + this.scene.key);
     }
 
-    update(time,delta) { }
+    update(time, delta) { }
 }
