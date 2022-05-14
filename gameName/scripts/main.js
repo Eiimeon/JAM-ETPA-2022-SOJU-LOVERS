@@ -1,5 +1,5 @@
 /*##################################################################################################################################################
-BOMONT Jérémy (Noé) - ETPA 2021-2022
+BOMONT Jérémy (Noé) - Entoin JEAN - ETPA 2021-2022
 Le jeu de la jam
 
 
@@ -21,6 +21,7 @@ var config = {
         // IntroLogos,
         StartScreen,
         PauseMenu,
+        Controls,
         MusicAndData,
         L1_0,
         L1_1,
@@ -41,3 +42,13 @@ var config = {
 
 
 var game = new Phaser.Game(config);
+
+function randomint(min,max){//fonction qui renvois un nombre entier aléatoire entre min et max (max exclus)
+
+    return min+Math.floor(Math.random()*(max-min));
+    
+}
+function randomfloat(min,max){//fonction qui renvois un nombre entier aléatoire entre min et max (max exclus)
+
+    return min+Math.random()*(max-min);
+}

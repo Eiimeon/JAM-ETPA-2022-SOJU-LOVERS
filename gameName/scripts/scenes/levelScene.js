@@ -30,7 +30,17 @@ class levelScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player1, this.obstacles);
         this.physics.add.collider(this.player2, this.obstacles);
-        this.physics.add.collider(this.player1, this.player2);
+        this.physics.add.overlap(this.player1, this.player2, function(p1, p2){
+
+            if(p1.hasChoco){
+                p2.tryTag(p1);
+            }else{
+                p1.tryTag(p2);
+            }
+            
+            
+            
+        });
     }
 
     buildLevel(map, tileset) {
@@ -48,13 +58,13 @@ class levelScene extends Phaser.Scene {
         this.spawns = map.getObjectLayer('spawns').objects;
 
 
-        this.player1 = new Chara(this, this.spawns[0].x, this.spawns[0].y, 'miko', 'cursors').setOrigin(0, 0);
-        this.player1.setSize(350, 200);
+        this.player1 = new Chara(this, this.spawns[0].x, this.spawns[0].y, 'miko', false).setOrigin(0, 0);
+        this.player1.body.setSize(350, 200);
         this.player1.body.setOffset(4 * 64 + 32, 900);
         this.player1.setScale(1 / 7);
 
-        this.player2 = new Chara(this, this.spawns[1].x, this.spawns[1].y, 'denialProto', 'zqsd').setOrigin(0, 0);
-        this.player2.setSize(350, 200);
+        this.player2 = new Chara(this, this.spawns[1].x, this.spawns[1].y, 'denial', true).setOrigin(0, 0);
+        this.player2.body.setSize(350, 200);
         this.player2.body.setOffset(4 * 64 + 32, 900);
         this.player2.setScale(1 / 7);
 
@@ -98,10 +108,10 @@ class levelScene extends Phaser.Scene {
         }
 
         this.player1.move(delta);
-        this.player1.animate();
+        //this.player1.animate();
 
         this.player2.move(delta);
-        this.player2.animate();
+        //this.player2.animate();
 
         this.player1.depthUpdate();
         this.player2.depthUpdate();

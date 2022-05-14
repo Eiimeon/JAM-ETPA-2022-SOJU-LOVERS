@@ -28,8 +28,19 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
         this.decelerationFactor = 3;
         this.turnDecelerationFactor = 4;
 
+        this.hasChoco = false;
+        this.stunTimer = -1;
+
+
+        console.log(this.controlsType)
+        if(this.controlsType){
+            this.hasChoco = true;
+        }
+
+
+
         // Animations
-        this.anims.create({
+        /*this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('runSheet', { frames: [0, 1, 2, 3, 4, 5] }),
             frameRate: 8,
@@ -41,193 +52,231 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
             frames: this.anims.generateFrameNumbers('runSheet', { frames: [6] }),
             frameRate: 8,
             repeat: -1
-        })
+        })*/
     }
 
     move(delta) {
-        switch(this.controlsType) {
-            case 'cursors' :
-                // console.log(this.accelerationX)
-        if(this.scene.cursors.left.isDown){
-            
-            if(this.accelerationX >=0){
-                this.accelerationX -= 0.001 * delta * this.turnDecelerationFactor;
-                
-            }
-            else if(this.accelerationX > -1){
-                this.accelerationX -= 0.001 * delta * this.accelerationFactor;
-            }
-            
-            this.flipX = true;
-        }
-        else if(this.scene.cursors.right.isDown){
 
 
-            if(this.accelerationX <=0)
+            if(this.controlsType)
             {
-                this.accelerationX += 0.001 * delta * this.turnDecelerationFactor;
-            }
-            else if(this.accelerationX < 1)
-            {
-                this.accelerationX += 0.001 * delta * this.accelerationFactor;
-            }
-                this.flipX = false;
+                if(this.scene.cursors.left.isDown){
+                    
 
-            
-        }else{
-
-            if(this.accelerationX <= -0.05 ){
-                this.accelerationX += 0.001 * delta * this.decelerationFactor;
-            
-            }else if(this.accelerationX >= 0.05 ){
-                this.accelerationX -= 0.001 * delta * this.decelerationFactor;
-
-            }else{
-                this.accelerationX = 0;
-
-            }
-        }
-        //up and doww
-        if(this.scene.cursors.up.isDown){
-            
-
-            if(this.accelerationY >=0){
-                this.accelerationY -= 0.001 * delta * this.turnDecelerationFactor;
-                
-            }
-            else if(this.accelerationY > -1){
-                this.accelerationY -= 0.001 * delta * this.accelerationFactor;
-            }
-            
-            this.flipX = true;
-        }
-        else if(this.scene.cursors.down.isDown){
+                    if(this.accelerationX >=0){
+                        this.accelerationX -= 0.001 * delta * this.turnDecelerationFactor;
+                        
+                    }
+                    else if(this.accelerationX > -1){
+                        this.accelerationX -= 0.001 * delta * this.accelerationFactor;
+                    }
+                    
+                    this.flipX = true;
+                }
+                else if(this.scene.cursors.right.isDown){
 
 
-            if(this.accelerationY <=0)
-            {
-                this.accelerationY += 0.001 * delta * this.turnDecelerationFactor;
-            }
-            else if(this.accelerationY < 1)
-            {
-                this.accelerationY += 0.001 * delta * this.accelerationFactor;
-            }
-                this.flipX = false;
+                    if(this.accelerationX <=0)
+                    {
+                        this.accelerationX += 0.001 * delta * this.turnDecelerationFactor;
+                    }
+                    else if(this.accelerationX < 1)
+                    {
+                        this.accelerationX += 0.001 * delta * this.accelerationFactor;
+                    }
+                        this.flipX = false;
 
-            
-        }else{
+                }else{
 
+                    if(this.accelerationX <= -0.02 ){
+                        this.accelerationX += 0.001 * delta * this.decelerationFactor;
+                    
+                    }else if(this.accelerationX >= 0.02 ){
+                        this.accelerationX -= 0.001 * delta * this.decelerationFactor;
 
-            if(this.accelerationY <= -0.05 ){
-                this.accelerationY += 0.001 * delta * this.decelerationFactor;
-            
-            }else if(this.accelerationY >= 0.05 ){
-                this.accelerationY -= 0.001 * delta * this.decelerationFactor;
+                    }else{
+                        this.accelerationX = 0;
 
-            }else{
-                this.accelerationY = 0;
+                    }
+                }
+                //up and doww
+                if(this.scene.cursors.up.isDown){
+                    
 
-            }
-  
-        }
-        this.setVelocityX(this.accelerationX * this.speed);
-        this.setVelocityY(this.accelerationY * this.speed);
-
-        break;
-
-        case 'zqsd' :
-            // console.log(this.accelerationX)
-        if(this.scene.keyQ.isDown){
-            
-            if(this.accelerationX >=0){
-                this.accelerationX -= 0.001 * delta * this.turnDecelerationFactor;
-                
-            }
-            else if(this.accelerationX > -1){
-                this.accelerationX -= 0.001 * delta * this.accelerationFactor;
-            }
-            
-            this.flipX = true;
-        }
-        else if(this.scene.keyD.isDown){
+                    if(this.accelerationY >=0){
+                        this.accelerationY -= 0.001 * delta * this.turnDecelerationFactor;
+                        
+                    }
+                    else if(this.accelerationY > -1){
+                        this.accelerationY -= 0.001 * delta * this.accelerationFactor;
+                    }
+                    
+                    this.flipX = true;
+                    
+                }
+                else if(this.scene.cursors.down.isDown){
 
 
-            if(this.accelerationX <=0)
-            {
-                this.accelerationX += 0.001 * delta * this.turnDecelerationFactor;
-            }
-            else if(this.accelerationX < 1)
-            {
-                this.accelerationX += 0.001 * delta * this.accelerationFactor;
-            }
-                this.flipX = false;
-
-            
-        }else{
-
-            if(this.accelerationX <= -0.05 ){
-                this.accelerationX += 0.001 * delta * this.decelerationFactor;
-            
-            }else if(this.accelerationX >= 0.05 ){
-                this.accelerationX -= 0.001 * delta * this.decelerationFactor;
-
-            }else{
-                this.accelerationX = 0;
-
-            }
-        }
-        //up and doww
-        if(this.scene.keyZ.isDown){
-            
-
-            if(this.accelerationY >=0){
-                this.accelerationY -= 0.001 * delta * this.turnDecelerationFactor;
-                
-            }
-            else if(this.accelerationY > -1){
-                this.accelerationY -= 0.001 * delta * this.accelerationFactor;
-            }
-            
-            this.flipX = true;
-        }
-        else if(this.scene.keyS.isDown){
+                    if(this.accelerationY <=0)
+                    {
+                        this.accelerationY += 0.001 * delta * this.turnDecelerationFactor;
+                    }
+                    else if(this.accelerationY < 1)
+                    {
+                        this.accelerationY += 0.001 * delta * this.accelerationFactor;
+                    }
+                        this.flipX = false;
+                    
+                    
+                }else{
 
 
-            if(this.accelerationY <=0)
-            {
-                this.accelerationY += 0.001 * delta * this.turnDecelerationFactor;
-            }
-            else if(this.accelerationY < 1)
-            {
-                this.accelerationY += 0.001 * delta * this.accelerationFactor;
-            }
-                this.flipX = false;
+                    if(this.accelerationY <= -0.02 ){
+                        this.accelerationY += 0.001 * delta * this.decelerationFactor;
+                    
+                    }else if(this.accelerationY >= 0.02 ){
+                        this.accelerationY -= 0.001 * delta * this.decelerationFactor;
 
-            
-        }else{
+                    }else{
+                        this.accelerationY = 0;
 
-
-            if(this.accelerationY <= -0.05 ){
-                this.accelerationY += 0.001 * delta * this.decelerationFactor;
-            
-            }else if(this.accelerationY >= 0.05 ){
-                this.accelerationY -= 0.001 * delta * this.decelerationFactor;
-
-            }else{
-                this.accelerationY = 0;
-
-            }
-  
-        }
-        this.setVelocityX(this.accelerationX * this.speed);
-        this.setVelocityY(this.accelerationY * this.speed);
-        }
+                    }
         
+                }
+            }else{
+
+                if(this.scene.keyQ.isDown){
+                    
+                    if(this.accelerationX >=0){
+                        this.accelerationX -= 0.001 * delta * this.turnDecelerationFactor;
+                        
+                    }
+                    else if(this.accelerationX > -1){
+                        this.accelerationX -= 0.001 * delta * this.accelerationFactor;
+                    }
+                    
+                    this.flipX = true;
+                }
+                else if(this.scene.keyD.isDown){
+
+
+                    if(this.accelerationX <=0)
+                    {
+                        this.accelerationX += 0.001 * delta * this.turnDecelerationFactor;
+                    }
+                    else if(this.accelerationX < 1)
+                    {
+                        this.accelerationX += 0.001 * delta * this.accelerationFactor;
+                    }
+                        this.flipX = false;
+
+                    
+                }else{
+
+                    if(this.accelerationX <= -0.02 ){
+                        this.accelerationX += 0.001 * delta * this.decelerationFactor;
+                    
+                    }else if(this.accelerationX >= 0.02 ){
+                        this.accelerationX -= 0.001 * delta * this.decelerationFactor;
+
+                    }else{
+                        this.accelerationX = 0;
+
+                    }
+                }
+                //up and doww
+                if(this.scene.keyZ.isDown){
+                    
+
+                    if(this.accelerationY >=0){
+                        this.accelerationY -= 0.001 * delta * this.turnDecelerationFactor;
+                        
+                    }
+                    else if(this.accelerationY > -1){
+                        this.accelerationY -= 0.001 * delta * this.accelerationFactor;
+                    }
+                    
+                    this.flipX = true;
+                }
+                else if(this.scene.keyS.isDown){
+
+
+                    if(this.accelerationY <=0)
+                    {
+                        this.accelerationY += 0.001 * delta * this.turnDecelerationFactor;
+                    }
+                    else if(this.accelerationY < 1)
+                    {
+                        this.accelerationY += 0.001 * delta * this.accelerationFactor;
+                    }
+                        this.flipX = false;
+
+                    
+                }else{
+
+
+                    if(this.accelerationY <= -0.02 ){
+                        this.accelerationY += 0.001 * delta * this.decelerationFactor;
+                    
+                    }else if(this.accelerationY >= 0.02 ){
+                        this.accelerationY -= 0.001 * delta * this.decelerationFactor;
+
+                    }else{
+                        this.accelerationY = 0;
+
+                    }
+        
+                }
+                
+            
+            }
+
+        this.setVelocityX(this.accelerationX * this.speed);
+        this.setVelocityY(this.accelerationY * this.speed);
+        if(this.stunTimer >= 0){
+            //do stun stuff
+            this.stunTimer -= delta;
+            this.setTint(0xff0000);
+        }else{
+            this.setTint(0xffffff);
+        }
+        if(this.hasChoco){
+
+            this.setTint(0xffff00);
+        }
     } 
 
     depthUpdate() {
         this.depth = this.y;
     }
+
+
+    tryTag(tagged){
+
+        if(this.stunTimer <0 && tagged.stunTimer <0){
+            this.hasChoco = true;
+            tagged.hasChoco = false;
+            tagged.stunTimer = 2000;
+
+            if(tagged.x - this.x < 0 ){
+                    tagged.accelerationX = -1 * randomfloat(0.9,1.2);
+
+            }
+            else{
+                tagged.accelerationX = 1 * randomfloat(0.9,1.2);
+
+            }
+            if(tagged.y - this.y < 0 ){
+
+                tagged.accelerationY = -1 * randomfloat(0.9,1.2);
+            }
+            else{
+                tagged.accelerationY = 1 * randomfloat(0.9,1.2);
+            }
+        }
+    }
+
+
 
     animate() {
         if (this.body.speed > 0) {
