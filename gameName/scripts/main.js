@@ -18,7 +18,7 @@ var config = {
         mode : Phaser.Scale.FIT
     },
     scene: [
-        // IntroLogos,
+        IntroLogos,
         StartScreen,
         PauseMenu,
         Controls,
@@ -43,6 +43,11 @@ var config = {
 
 
 var game = new Phaser.Game(config);
+
+function restartGame() {
+    game.destroy(true);
+    game = new Phaser.Game(config);
+}
 
 function randomint(min,max){//fonction qui renvois un nombre entier aléatoire entre min et max (max exclus)
 

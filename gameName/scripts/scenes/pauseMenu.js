@@ -2,6 +2,13 @@ class PauseMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'PauseMenu',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    debug: true
+                }
+            }
         })
         this.canPressP = false;
     }
@@ -13,8 +20,18 @@ class PauseMenu extends Phaser.Scene {
     }
 
     endGame() {
+        this.musicScene.levelScene.scene.remove();
+        this.scene.add('L1_0',{
+            key: 'L1_0',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    // debug: true
+                }
+            }
+        });
         this.musicScene.scene.stop();
-        this.musicScene.levelScene.scene.stop();
         this.scene.run('StartScreen');
         this.scene.sleep();
     }
@@ -29,23 +46,28 @@ class PauseMenu extends Phaser.Scene {
     create() {
         this.musicScene = this.scene.get('MusicAndData');
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-        this.time.addEvent({delay : 500, callback : () => {this.canPressP = true}});
+        this.time.addEvent({ delay: 500, callback: () => { this.canPressP = true } });
 
-        this.add.image(1920 / 2, 1080 / 2, 'pause');
+        this.bg = this.add.image(1920 / 2, 1080 / 2, 'pause');
+        this.bg.setScale(0.5);
+        this.bg.y += 100;
+        this.bg.x -= 100;
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
-        this.resume = this.add.image(500, 300, 'resume');
-        this.resume.setInteractive();
-        this.resume.on('pointerdown', () => this.resumeGame());
 
-        this.controls = this.add.image(500, 600, 'controls');
+        this.controls = this.add.image(500, 600, 'controls').setScale(0.2);
+        this.controls.x += 625;
+        this.controls.y += 50;
+        // this.controls.visible = false;
         this.controls.setInteractive();
         this.controls.on('pointerdown', () => this.toggleControls());
 
-        this.mainMenu = this.add.image(500, 900, 'mainMenu');
+        this.mainMenu = this.add.image(500, 900, 'mainMenu').setScale(0.2);
+        this.mainMenu.x += 575;
+        this.mainMenu.y -= 100;
         this.mainMenu.setInteractive();
-        this.mainMenu.on('pointerdown', () => this.endGame());
+        this.mainMenu.on('pointerdown', () => restartGame());
     }
 
     update() {

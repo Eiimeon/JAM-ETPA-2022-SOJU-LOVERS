@@ -295,24 +295,11 @@ class Chara extends Phaser.Physics.Arcade.Sprite {
 
         if(this.stunTimer <0 && tagged.stunTimer <0 && tagged.safeTimer <0){
 
-            for (let i = 0; i<2 ; i++) {
-                console.log('swap');
-                this.scene.safe1[i].forEach((safeBox) => {
-                    safeBox.swap2(1);
-                })
-                // this.scene.safe1Overlap[i].forEach((safeBox) => {
-                //     safeBox.swap();
-                // })
-                this.scene.safe2[i].forEach((safeBox) => {
-                    safeBox.swap2(2);
-                })
-                // this.scene.safe2Overlap[i].forEach((safeBox) => {
-                //     safeBox.swap();
-                // })
-            }
+            console.log('tag')
 
-
-
+            console.log(this.scene.safe1);
+            this.scene.safe1.swap();
+            this.scene.safe2.swap();
 
             this.hasChoco = true;
             tagged.hasChoco = false;
