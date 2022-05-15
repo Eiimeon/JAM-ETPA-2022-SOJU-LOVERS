@@ -18,36 +18,27 @@ var config = {
         mode : Phaser.Scale.FIT
     },
     scene: [
-        IntroLogos,
+        // IntroLogos,
         StartScreen,
         PauseMenu,
         Controls,
         MusicAndData,
         Credits,
-        L1_0,
-        L1_1,
-        L1_2,
-        L1_3,
-        L1_4,
-        L1_5,
-        L1_6,
-        L1_7,
-        L1_8,
-        L1_9,
-        Gym
+        L1_0
+
     ],
     audio: {
         disableWebAudio: false
-    }
+    },
+    //pixelArt : true
 };
-
-
-var game = new Phaser.Game(config);
 
 function restartGame() {
     game.destroy(true);
     game = new Phaser.Game(config);
 }
+
+var game = new Phaser.Game(config);
 
 function randomint(min,max){//fonction qui renvois un nombre entier aléatoire entre min et max (max exclus)
 

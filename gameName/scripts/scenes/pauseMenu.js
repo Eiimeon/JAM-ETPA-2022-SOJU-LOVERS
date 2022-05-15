@@ -2,13 +2,6 @@ class PauseMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'PauseMenu',
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 0 },
-                    debug: true
-                }
-            }
         })
         this.canPressP = false;
     }
@@ -20,18 +13,8 @@ class PauseMenu extends Phaser.Scene {
     }
 
     endGame() {
-        this.musicScene.levelScene.scene.remove();
-        this.scene.add('L1_0',{
-            key: 'L1_0',
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 0 },
-                    // debug: true
-                }
-            }
-        });
         this.musicScene.scene.stop();
+        this.musicScene.levelScene.scene.stop();
         this.scene.run('StartScreen');
         this.scene.sleep();
     }
